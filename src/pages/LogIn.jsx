@@ -47,6 +47,7 @@ export default function Login() {
                 <StyledInput
                     type="text"
                     name="username"
+                    autoComplete="username"
                     placeholder="Username"
                     onChange={(e) => setUsername(e.target.value)}
                     required
@@ -54,13 +55,18 @@ export default function Login() {
                 <StyledInput
                     type="password"
                     name="password"
+                    autoComplete="password"
                     placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
                 <StyledBtn type="submit" disabled={loading}>
-                    {loading ? <Spinner /> : "Login"}
+                    {loading ? <Spinner /> : "Log In"}
                 </StyledBtn>
+                <SignUpText>
+                    Not registered yet?{" "}
+                    <SignUpLink href="/sign-up">Sign Up</SignUpLink>
+                </SignUpText>
             </StyledForm>
         </>
     );
@@ -109,6 +115,14 @@ const StyledBtn = styled.button`
     border: none;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+`;
+
+const SignUpText = styled.p`
+    margin: 0;
+`;
+
+const SignUpLink = styled.a`
+    color: #2cc033;
 `;
 
 const ErrorMsg = styled.p`

@@ -1,3 +1,164 @@
-export default function SignUp() {
-    return <div>Sign Up Page</div>;
+import styled, { keyframes } from "styled-components";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        try {
+            const response = await fetch(`${API_URL}/sign-up`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password, name, username }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message);
+            }
+
+            navigate("/log-in");
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
+    }
+
+    return (
+        <>
+            <StyledTitle>Simple_Talk</StyledTitle>
+            <StyledTitle>Sign Up</StyledTitle>
+            <StyledForm onSubmit={handleSubmit}>
+                <ErrorMsg>{error}</ErrorMsg>
+                <StyledInput
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                <StyledInput
+                    type="password"
+                    name="password"
+                    autoComplete="password"
+                    placeholder="Password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <StyledInput
+                    type="text"
+                    name="name"
+                    autoComplete="name"
+                    placeholder="Name"
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
+                <StyledInput
+                    type="text"
+                    name="username"
+                    autoComplete="username"
+                    placeholder="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+
+                <StyledBtn type="submit" disabled={loading}>
+                    {loading ? <Spinner /> : "Sign Up"}
+                </StyledBtn>
+                <LogInText>
+                    Existing user? <LogInLink href="/log-in">Log In</LogInLink>
+                </LogInText>
+            </StyledForm>
+        </>
+    );
 }
+
+const StyledTitle = styled.h1`
+    text-align: center;
+`;
+
+const StyledForm = styled.form`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #28752c;
+    border-radius: 5px;
+    padding: 1rem;
+`;
+
+const StyledInput = styled.input`
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    color: white;
+    background-color: #4b4b4b;
+
+    &::placeholder {
+        color: #ffffff60;
+    }
+`;
+
+const StyledBtn = styled.button`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #28752c;
+    color: white;
+    font-weight: 900;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+`;
+
+const LogInText = styled.p`
+    margin: 0;
+`;
+
+const LogInLink = styled.a`
+    color: #2cc033;
+`;
+
+const ErrorMsg = styled.p`
+    color: #b82525;
+    padding: 0;
+    margin: 0;
+`;
+
+const spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const Spinner = styled.div`
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: ${spin} 0.6s linear infinite;
+`;
