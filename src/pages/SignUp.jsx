@@ -1,42 +1,22 @@
 import styled, { keyframes } from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useAPI from "../hooks/useAPI";
 
-export default function Login() {
+export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_API_URL;
+    const { signUp } = useAPI();
 
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
         setLoading(true);
 
-        try {
-            const response = await fetch(`${API_URL}/sign-up`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password, name, username }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message);
-            }
-
-            navigate("/log-in");
-        } catch (err) {
-            setError(err.message);
-            setLoading(false);
-        }
+        await signUp({ email, password, name, username }, setError, setLoading);
     }
 
     return (

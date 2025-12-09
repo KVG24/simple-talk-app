@@ -1,41 +1,20 @@
 import styled, { keyframes } from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useAPI from "../hooks/useAPI";
 
-export default function Login() {
+export default function LogIn() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_API_URL;
+    const { logIn } = useAPI();
 
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
         setLoading(true);
 
-        try {
-            const response = await fetch(`${API_URL}/log-in`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message);
-            }
-
-            localStorage.setItem("jwtToken", data.token);
-            navigate("/");
-        } catch (err) {
-            setError(err.message);
-            setLoading(false);
-        }
+        await logIn({ username, password }, setError, setLoading);
     }
 
     return (
