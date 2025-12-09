@@ -17,9 +17,7 @@ export default function useAPI() {
 
             const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(data.message);
-            }
+            if (!response.ok) throw new Error(data.message);
 
             localStorage.setItem("jwtToken", data.token);
             navigate("/");
@@ -41,9 +39,7 @@ export default function useAPI() {
 
             const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(data.message);
-            }
+            if (!response.ok) throw new Error(data.message);
 
             navigate("/log-in");
         } catch (err) {
@@ -52,8 +48,144 @@ export default function useAPI() {
         }
     };
 
+    const getReceivedMessages = async () => {
+        try {
+            const response = await fetch(`${API_URL}/messages/received`, {
+                method: "GET",
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
+    const getSentMessages = async () => {
+        try {
+            const response = await fetch(`${API_URL}/messages/sent`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
+    const getConversation = async (profileId) => {
+        try {
+            const response = await fetch(
+                `${API_URL}/messages/conversationWith/${profileId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
+    const createMessage = async (messageData) => {
+        try {
+            const response = await fetch(`${API_URL}/messages/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: json.stringify(messageData),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
+    const editMessage = async (editedMessageData, messageId) => {
+        try {
+            const response = await fetch(
+                `${API_URL}/messages/edit/${messageId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: json.stringify(editedMessageData),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
+    const deleteMessage = async (messageId) => {
+        try {
+            const response = await fetch(
+                `${API_URL}/messages/delete/${messageId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
     return {
         logIn,
         signUp,
+        getReceivedMessages,
+        getSentMessages,
+        getConversation,
+        createMessage,
+        editMessage,
+        deleteMessage,
     };
 }
