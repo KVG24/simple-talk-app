@@ -52,6 +52,9 @@ export default function useAPI() {
         try {
             const response = await fetch(`${API_URL}/messages/received`, {
                 method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
 
             const data = await response.json();
