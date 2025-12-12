@@ -1,6 +1,13 @@
 import styled from "styled-components";
+import useConversationsList from "../hooks/useConversationsList";
+import { useEffect, useState } from "react";
 
 export default function Conversations() {
+    const { partners, loading, error } = useConversationsList();
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error loading conversations: {error}</p>;
+
     return (
         <>
             <LogOutLink
@@ -11,7 +18,11 @@ export default function Conversations() {
             </LogOutLink>
             <Container>
                 <h1>Conversations Page</h1>
-                <ConversationsDiv></ConversationsDiv>
+                <ConversationsDiv>
+                    {partners.map((partnerId) => (
+                        <PartnerDiv key={partnerId}>{partnerId}</PartnerDiv>
+                    ))}
+                </ConversationsDiv>
             </Container>
         </>
     );
@@ -36,4 +47,12 @@ const Container = styled.div`
 const ConversationsDiv = styled.div`
     border: 2px solid white;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const PartnerDiv = styled.div`
+    border: 1px solid #28752c;
+    border-radius: 5px;
+    padding: 1rem;
 `;
