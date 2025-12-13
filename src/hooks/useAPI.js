@@ -88,6 +88,26 @@ export default function useAPI() {
         }
     };
 
+    const getConversationProfiles = async () => {
+        try {
+            const response = await fetch(`${API_URL}/messages/partners`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message);
+
+            return data;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    };
+
     const getConversation = async (profileId) => {
         try {
             const response = await fetch(
@@ -186,6 +206,7 @@ export default function useAPI() {
         signUp,
         getReceivedMessages,
         getSentMessages,
+        getConversationProfiles,
         getConversation,
         createMessage,
         editMessage,

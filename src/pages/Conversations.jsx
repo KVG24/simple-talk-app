@@ -1,12 +1,14 @@
 import styled from "styled-components";
-import useConversationsList from "../hooks/useConversationsList";
+import useAPI from "../hooks/useAPI";
 import { useEffect, useState } from "react";
 
 export default function Conversations() {
-    const { partners, loading, error } = useConversationsList();
+    const { getConversationProfiles } = useAPI();
+    const [conversationProfiles, setConversationProfiles] = useState([]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading conversations: {error}</p>;
+    useEffect(() => {
+        getConversationProfiles().then((data) => setConversationProfiles(data));
+    });
 
     return (
         <>
@@ -19,8 +21,11 @@ export default function Conversations() {
             <Container>
                 <h1>Conversations Page</h1>
                 <ConversationsDiv>
-                    {partners.map((partnerId) => (
-                        <PartnerDiv key={partnerId}>{partnerId}</PartnerDiv>
+                    {conversationProfiles.map((profile) => (
+                        <PartnerDiv key={profile.id}>
+                            <p>{profile.name}</p>
+                            <p>@{profile.username}</p>
+                        </PartnerDiv>
                     ))}
                 </ConversationsDiv>
             </Container>
