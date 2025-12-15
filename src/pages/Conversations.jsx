@@ -7,6 +7,7 @@ export default function Conversations() {
     const { getConversationProfiles, getConversation } = useAPI();
     const [conversationProfiles, setConversationProfiles] = useState([]);
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [partnerUserId, setPartnerUserId] = useState(null);
     const [messages, setMessages] = useState([]);
     const [chatWindow, setChatWindow] = useState(false);
 
@@ -20,6 +21,7 @@ export default function Conversations() {
     function openChatWindow(profileId) {
         getConversation(profileId).then((data) => setMessages(data));
         setChatWindow(true);
+        setPartnerUserId(profileId);
     }
 
     return (
@@ -49,6 +51,7 @@ export default function Conversations() {
                         <ChatWindow
                             messages={messages}
                             currentUserId={currentUserId}
+                            partnerUserId={partnerUserId}
                         />
                     )}
                 </ConversationsDiv>

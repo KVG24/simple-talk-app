@@ -139,7 +139,7 @@ export default function useAPI() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: json.stringify(messageData),
+                body: JSON.stringify(messageData),
             });
 
             const data = await response.json();

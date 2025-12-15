@@ -1,7 +1,25 @@
+import { useState } from "react";
 import styled from "styled-components";
+import useAPI from "../hooks/useAPI";
 import convertDate from "../utils/convertDate";
 
-export default function ChatWindow({ messages, currentUserId }) {
+export default function ChatWindow({ messages, currentUserId, partnerUserId }) {
+    const { createMessage } = useAPI();
+    const [messageText, setMessageText] = useState("");
+
+    async function sendMessage(e) {
+        e.preventDefault();
+        try {
+            await createMessage({
+                text: messageText,
+                receiverId: partnerUserId,
+            });
+            setMessageText("");
+        } catch (err) {
+            console.error("Error sending message: ", err);
+        }
+    }
+
     return (
         <>
             <Container>
@@ -16,6 +34,15 @@ export default function ChatWindow({ messages, currentUserId }) {
                         </MessageDate>
                     </MessageDiv>
                 ))}
+                <InputMessageForm onSubmit={sendMessage}>
+                    <InputMessageText
+                        type="text"
+                        value={messageText}
+                        placeholder="Start typing your message here"
+                        onChange={(e) => setMessageText(e.target.value)}
+                    />
+                    <SendMessageBtn type="submit">Send</SendMessageBtn>
+                </InputMessageForm>
             </Container>
         </>
     );
@@ -28,6 +55,7 @@ const Container = styled.div`
     border: 1px solid #86880b;
     border-radius: 5px;
     padding: 1rem;
+    width: 400px;
 `;
 
 const MessageDiv = styled.div`
@@ -44,6 +72,33 @@ const MessageDiv = styled.div`
 const MessageText = styled.p``;
 
 const MessageDate = styled.p`
-    color: #9e9e9e;
+    color: #b1b1b1;
     font-size: 0.7rem;
+`;
+
+const InputMessageForm = styled.form`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const InputMessageText = styled.input`
+    padding: 0.5rem 0.2rem;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    width: 100%;
+    background-color: #525252;
+    color: white;
+
+    &::placeholder {
+        color: #a3a3a3;
+    }
+`;
+
+const SendMessageBtn = styled.button`
+    padding: 0.2rem 0.5rem;
+    background-color: #1b611e;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    color: white;
+    cursor: pointer;
 `;
