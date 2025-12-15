@@ -6,14 +6,18 @@ import ChatWindow from "../components/ChatWindow";
 export default function Conversations() {
     const { getConversationProfiles, getConversation } = useAPI();
     const [conversationProfiles, setConversationProfiles] = useState([]);
+    const [currentUserId, setCurrentUserId] = useState(null);
     const [messages, setMessages] = useState([]);
     const [chatWindow, setChatWindow] = useState(false);
 
     useEffect(() => {
-        getConversationProfiles().then((data) => setConversationProfiles(data));
+        getConversationProfiles().then((data) => {
+            setConversationProfiles(data.partners);
+            setCurrentUserId(data.currentUserId);
+        });
     }, []);
 
-    function openConversation(profileId) {
+    function openChatWindow(profileId) {
         getConversation(profileId).then((data) => setMessages(data));
         setChatWindow(true);
     }
@@ -27,25 +31,36 @@ export default function Conversations() {
                 Log Out
             </LogOutLink>
             <Container>
-                <h1>Conversations</h1>
+                <Title>Simple_Talk</Title>
                 <ConversationsDiv>
                     <ConversationPartners>
                         {conversationProfiles.map((profile) => (
                             <PartnerDiv
-                                onClick={() => openConversation(profile.id)}
+                                onClick={() => openChatWindow(profile.id)}
                                 key={profile.id}
                             >
-                                <p>{profile.name}</p>
-                                <p>@{profile.username}</p>
+                                <p>
+                                    {profile.name} (@{profile.username})
+                                </p>
                             </PartnerDiv>
                         ))}
                     </ConversationPartners>
-                    {chatWindow && <ChatWindow messages={messages} />}
+                    {chatWindow && (
+                        <ChatWindow
+                            messages={messages}
+                            currentUserId={currentUserId}
+                        />
+                    )}
                 </ConversationsDiv>
             </Container>
         </>
     );
 }
+
+const Title = styled.h1`
+    text-align: center;
+    width: 100%;
+`;
 
 const LogOutLink = styled.a`
     padding: 0.2rem 0.5rem;
@@ -59,33 +74,35 @@ const LogOutLink = styled.a`
 `;
 
 const Container = styled.div`
-    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
     height: 100%;
 `;
 
 const ConversationsDiv = styled.div`
-    border-radius: 5px;
     display: flex;
     gap: 1rem;
+    justify-content: center;
+    height: 100%;
 `;
 
 const ConversationPartners = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #28752c;
+    border-radius: 5px;
+    height: 100%;
 `;
 
 const PartnerDiv = styled.div`
-    border: 1px solid #28752c;
+    border: 1px solid #525252;
     border-radius: 5px;
     padding: 1rem;
     cursor: pointer;
 
-    & :hover {
+    &:hover {
         background-color: #525252;
-    }
-
-    & p {
-        margin: 0;
     }
 `;
