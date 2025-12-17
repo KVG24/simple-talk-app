@@ -3,7 +3,7 @@ import styled from "styled-components";
 import useAPI from "../hooks/useAPI";
 import convertDate from "../utils/convertDate";
 
-export default function ChatWindow({ messages, currentUserId, partnerUserId }) {
+export default function ChatWindow({ messages, currentUserId, partnerId }) {
     const { createMessage } = useAPI();
     const [messageText, setMessageText] = useState("");
 
@@ -12,7 +12,7 @@ export default function ChatWindow({ messages, currentUserId, partnerUserId }) {
         try {
             await createMessage({
                 text: messageText,
-                receiverId: partnerUserId,
+                receiverId: partnerId,
             });
             setMessageText("");
         } catch (err) {

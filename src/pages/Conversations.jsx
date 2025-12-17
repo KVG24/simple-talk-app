@@ -7,7 +7,7 @@ export default function Conversations() {
     const { getConversationProfiles, getConversation } = useAPI();
     const [conversationProfiles, setConversationProfiles] = useState([]);
     const [currentUserId, setCurrentUserId] = useState(null);
-    const [partnerUserId, setPartnerUserId] = useState(null);
+    const [partnerId, setPartnerId] = useState(null);
     const [messages, setMessages] = useState([]);
     const [chatWindow, setChatWindow] = useState(false);
 
@@ -21,7 +21,7 @@ export default function Conversations() {
     function openChatWindow(profileId) {
         getConversation(profileId).then((data) => setMessages(data));
         setChatWindow(true);
-        setPartnerUserId(profileId);
+        setPartnerId(profileId);
     }
 
     return (
@@ -40,7 +40,7 @@ export default function Conversations() {
                             <PartnerDiv
                                 onClick={() => openChatWindow(profile.id)}
                                 key={profile.id}
-                                tabIndex={profile.id}
+                                $isActive={partnerId === profile.id}
                             >
                                 <p>
                                     {profile.name} (@{profile.username})
@@ -52,7 +52,7 @@ export default function Conversations() {
                         <ChatWindow
                             messages={messages}
                             currentUserId={currentUserId}
-                            partnerUserId={partnerUserId}
+                            partnerId={partnerId}
                         />
                     )}
                 </ConversationsDiv>
@@ -103,16 +103,15 @@ const ConversationPartners = styled.div`
 `;
 
 const PartnerDiv = styled.div`
-    border: 1px solid #686909;
     border-radius: 5px;
     padding: 1rem;
     cursor: pointer;
+    border: 1px solid;
+    border-color: ${(props) => (props.$isActive ? "#8b8d0c" : "#1b611e")};
+    background-color: ${(props) =>
+        props.$isActive ? "#1b611e" : "transparent"};
 
     &:hover {
-        background-color: #525252;
-    }
-
-    &:focus {
-        background-color: #525252;
+        background-color: #1b611e;
     }
 `;
