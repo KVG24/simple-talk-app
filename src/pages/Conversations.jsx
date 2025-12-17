@@ -40,6 +40,7 @@ export default function Conversations() {
                             <PartnerDiv
                                 onClick={() => openChatWindow(profile.id)}
                                 key={profile.id}
+                                tabIndex={profile.id}
                             >
                                 <p>
                                     {profile.name} (@{profile.username})
@@ -79,7 +80,7 @@ const LogOutLink = styled.a`
 const Container = styled.div`
     max-width: 1000px;
     margin: 0 auto;
-    height: 100%;
+    height: 80vh;
 `;
 
 const ConversationsDiv = styled.div`
@@ -96,16 +97,22 @@ const ConversationPartners = styled.div`
     padding: 1rem;
     border: 1px solid #28752c;
     border-radius: 5px;
-    height: 100%;
+    width: 400px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 `;
 
 const PartnerDiv = styled.div`
-    border: 1px solid #525252;
+    border: 1px solid #686909;
     border-radius: 5px;
     padding: 1rem;
     cursor: pointer;
 
     &:hover {
+        background-color: #525252;
+    }
+
+    &:focus {
         background-color: #525252;
     }
 `;

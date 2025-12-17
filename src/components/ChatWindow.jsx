@@ -23,22 +23,24 @@ export default function ChatWindow({ messages, currentUserId, partnerUserId }) {
     return (
         <>
             <Container>
-                {messages.map((message) => (
-                    <MessageDiv
-                        key={message.id}
-                        $isSender={currentUserId === message.senderId}
-                    >
-                        <MessageText>{message.text}</MessageText>
-                        <MessageDate>
-                            {convertDate(message.createdAt)}
-                        </MessageDate>
-                    </MessageDiv>
-                ))}
+                <MessagesContainer>
+                    {messages.map((message) => (
+                        <MessageDiv
+                            key={message.id}
+                            $isSender={currentUserId === message.senderId}
+                        >
+                            <MessageText>{message.text}</MessageText>
+                            <MessageDate>
+                                {convertDate(message.createdAt)}
+                            </MessageDate>
+                        </MessageDiv>
+                    ))}
+                </MessagesContainer>
                 <InputMessageForm onSubmit={sendMessage}>
                     <InputMessageText
                         type="text"
                         value={messageText}
-                        placeholder="Start typing your message here"
+                        placeholder="Start typing message... 'Enter' to send"
                         onChange={(e) => setMessageText(e.target.value)}
                     />
                     <SendMessageBtn type="submit">Send</SendMessageBtn>
@@ -51,11 +53,21 @@ export default function ChatWindow({ messages, currentUserId, partnerUserId }) {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 1rem;
     border: 1px solid #86880b;
     border-radius: 5px;
-    padding: 1rem;
     width: 400px;
+`;
+
+const MessagesContainer = styled.div`
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1rem;
+    height: 100%;
+    overflow-y: auto;
+    padding: 1rem;
+    scrollbar-gutter: stable;
 `;
 
 const MessageDiv = styled.div`
@@ -67,6 +79,7 @@ const MessageDiv = styled.div`
     flex-direction: column;
     align-items: ${(props) => (props.$isSender ? "flex-end" : "flex-start")};
     align-self: ${(props) => (props.$isSender ? "flex-end" : "flex-start")};
+    word-break: break-word;
 `;
 
 const MessageText = styled.p``;
@@ -79,10 +92,11 @@ const MessageDate = styled.p`
 const InputMessageForm = styled.form`
     display: flex;
     justify-content: space-between;
+    padding: 0.5rem;
 `;
 
 const InputMessageText = styled.input`
-    padding: 0.5rem 0.2rem;
+    padding: 0.7rem;
     border: none;
     border-radius: 5px 0 0 5px;
     width: 100%;
@@ -92,13 +106,21 @@ const InputMessageText = styled.input`
     &::placeholder {
         color: #a3a3a3;
     }
+
+    &:focus {
+        background-color: #113d13;
+        outline: none;
+    }
 `;
 
 const SendMessageBtn = styled.button`
     padding: 0.2rem 0.5rem;
     background-color: #1b611e;
-    border: none;
     border-radius: 0 5px 5px 0;
     color: white;
-    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: #686909;
+    }
 `;
