@@ -2,6 +2,7 @@ import styled from "styled-components";
 import useAPI from "../hooks/useAPI";
 import { useEffect, useState } from "react";
 import ChatWindow from "../components/ChatWindow";
+import ProfileSearch from "../components/ProfileSearch";
 
 export default function Conversations() {
     const { getConversationProfiles, getConversation } = useAPI();
@@ -26,6 +27,7 @@ export default function Conversations() {
 
     return (
         <>
+            <ProfileSearch />
             <LogOutLink
                 href="/log-in"
                 onClick={() => localStorage.removeItem("jwtToken")}
