@@ -3,18 +3,25 @@ import styled from "styled-components";
 import useAPI from "../hooks/useAPI";
 import convertDate from "../utils/convertDate";
 
-export default function ChatWindow({ messages, currentUserId, partnerId }) {
+export default function ChatWindow({
+    messages,
+    currentUserId,
+    partnerId,
+    onSent,
+}) {
     const { createMessage } = useAPI();
     const [messageText, setMessageText] = useState("");
 
     async function sendMessage(e) {
         e.preventDefault();
         try {
+            if (!messageText) return null;
             await createMessage({
                 text: messageText,
                 receiverId: partnerId,
             });
             setMessageText("");
+            onSent();
         } catch (err) {
             console.error("Error sending message: ", err);
         }

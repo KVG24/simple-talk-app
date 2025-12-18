@@ -25,9 +25,13 @@ export default function Conversations() {
         setPartnerId(profileId);
     }
 
+    function refreshMessages(profileId) {
+        getConversation(profileId).then((data) => setMessages(data));
+    }
+
     return (
         <>
-            <ProfileSearch />
+            <ProfileSearch openChatWindow={openChatWindow} />
             <LogOutLink
                 href="/log-in"
                 onClick={() => localStorage.removeItem("jwtToken")}
@@ -55,6 +59,7 @@ export default function Conversations() {
                             messages={messages}
                             currentUserId={currentUserId}
                             partnerId={partnerId}
+                            onSent={() => refreshMessages(partnerId)}
                         />
                     )}
                 </ConversationsDiv>

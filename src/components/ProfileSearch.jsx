@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import useAPI from "../hooks/useAPI";
 import styled from "styled-components";
 
-export default function ProfileSearch() {
+export default function ProfileSearch({ openChatWindow }) {
     const { searchProfiles } = useAPI();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
@@ -30,9 +30,12 @@ export default function ProfileSearch() {
 
             <ResultsContainer>
                 {results &&
-                    results.map((user) => (
-                        <FoundProfile key={user.id}>
-                            {user.name} (@{user.username})
+                    results.map((profile) => (
+                        <FoundProfile
+                            key={profile.id}
+                            onClick={() => openChatWindow(profile.id)}
+                        >
+                            {profile.name} (@{profile.username})
                         </FoundProfile>
                     ))}
             </ResultsContainer>
