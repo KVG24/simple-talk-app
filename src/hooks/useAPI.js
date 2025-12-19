@@ -163,7 +163,7 @@ export default function useAPI() {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
-                    body: json.stringify(editedMessageData),
+                    body: JSON.stringify(editedMessageData),
                 }
             );
 
@@ -183,7 +183,7 @@ export default function useAPI() {
             const response = await fetch(
                 `${API_URL}/messages/delete/${messageId}`,
                 {
-                    method: "POST",
+                    method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

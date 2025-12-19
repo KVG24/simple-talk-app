@@ -59,7 +59,7 @@ export default function Conversations() {
                             messages={messages}
                             currentUserId={currentUserId}
                             partnerId={partnerId}
-                            onSent={() => refreshMessages(partnerId)}
+                            onAction={() => refreshMessages(partnerId)}
                         />
                     )}
                 </ConversationsDiv>

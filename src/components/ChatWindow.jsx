@@ -1,17 +1,19 @@
 import { useState } from "react";
 import styled from "styled-components";
 import useAPI from "../hooks/useAPI";
-import convertDate from "../utils/convertDate";
+import Message from "./Message";
 
 export default function ChatWindow({
     messages,
     currentUserId,
     partnerId,
-    onSent,
+    onAction,
 }) {
     const { createMessage } = useAPI();
     const [messageText, setMessageText] = useState("");
     const [contextMenu, setContextMenu] = useState(false);
+    const [mode, setMode] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
     const [mouseCoordinates, setMouseCoordinates] = useState({
         x: 0,
         y: 0,
@@ -26,17 +28,27 @@ export default function ChatWindow({
                 receiverId: partnerId,
             });
             setMessageText("");
-            onSent();
+            onAction();
         } catch (err) {
             console.error("Error sending message: ", err);
         }
     }
 
-    function handleRightClick(e) {
-        e.preventDefault();
-        setContextMenu(true);
-        setMouseCoordinates({ x: e.clientX, y: e.clientY });
+    function handleRightClick(e, id, senderId) {
+        if (senderId === currentUserId) {
+            e.preventDefault();
+            setSelectedId(id);
+            setContextMenu(true);
+            setMouseCoordinates({ x: e.clientX, y: e.clientY });
+        } else {
+            return null;
+        }
     }
+
+    const resetMode = () => {
+        setMode("");
+        setSelectedId(null);
+    };
 
     return (
         <>
@@ -46,23 +58,45 @@ export default function ChatWindow({
                         $x={mouseCoordinates.x}
                         $y={mouseCoordinates.y}
                     >
-                        <ContextMenuItem>Delete</ContextMenuItem>
-                        <ContextMenuItem>Edit</ContextMenuItem>
+                        <ContextMenuItem
+                            onClick={() => {
+                                setMode("delete");
+                                setContextMenu(false);
+                            }}
+                        >
+                            Delete
+                        </ContextMenuItem>
+                        <ContextMenuItem
+                            onClick={() => {
+                                setMode("edit");
+                                setContextMenu(false);
+                            }}
+                        >
+                            Edit
+                        </ContextMenuItem>
                     </ContextMenu>
                 )}
 
                 <MessagesContainer onClick={() => setContextMenu(false)}>
                     {messages.map((message) => (
-                        <MessageDiv
+                        <Message
                             key={message.id}
-                            $isSender={currentUserId === message.senderId}
-                            onContextMenu={(e) => handleRightClick(e)}
-                        >
-                            <MessageText>{message.text}</MessageText>
-                            <MessageDate>
-                                {convertDate(message.createdAt)}
-                            </MessageDate>
-                        </MessageDiv>
+                            id={message.id}
+                            senderId={message.senderId}
+                            text={message.text}
+                            createdAt={message.createdAt}
+                            currentUserId={currentUserId}
+                            handleRightClick={(e) =>
+                                handleRightClick(
+                                    e,
+                                    message.id,
+                                    message.senderId
+                                )
+                            }
+                            mode={selectedId === message.id ? mode : ""}
+                            resetMode={resetMode}
+                            onAction={onAction}
+                        />
                     ))}
                 </MessagesContainer>
                 <InputMessageForm onSubmit={sendMessage}>
@@ -98,25 +132,6 @@ const MessagesContainer = styled.div`
     overflow-y: auto;
     padding: 1rem;
     scrollbar-gutter: stable;
-`;
-
-const MessageDiv = styled.div`
-    padding: 0.5rem;
-    background-color: ${(props) => (props.$isSender ? "#1b611e" : "#686909")};
-    border-radius: 5px;
-    max-width: max-content;
-    display: flex;
-    flex-direction: column;
-    align-items: ${(props) => (props.$isSender ? "flex-end" : "flex-start")};
-    align-self: ${(props) => (props.$isSender ? "flex-end" : "flex-start")};
-    word-break: break-word;
-`;
-
-const MessageText = styled.p``;
-
-const MessageDate = styled.p`
-    color: #b1b1b1;
-    font-size: 0.7rem;
 `;
 
 const InputMessageForm = styled.form`
@@ -169,9 +184,10 @@ const ContextMenu = styled.div`
 `;
 
 const ContextMenuItem = styled.div`
-    padding: 0.5rem;
+    padding: 0.2rem;
     cursor: pointer;
     border-radius: 5px;
+    text-align: center;
 
     &:hover {
         background-color: #525252;
