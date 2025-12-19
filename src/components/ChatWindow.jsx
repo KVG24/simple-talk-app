@@ -11,6 +11,11 @@ export default function ChatWindow({
 }) {
     const { createMessage } = useAPI();
     const [messageText, setMessageText] = useState("");
+    const [contextMenu, setContextMenu] = useState(false);
+    const [mouseCoordinates, setMouseCoordinates] = useState({
+        x: 0,
+        y: 0,
+    });
 
     async function sendMessage(e) {
         e.preventDefault();
@@ -27,14 +32,31 @@ export default function ChatWindow({
         }
     }
 
+    function handleRightClick(e) {
+        e.preventDefault();
+        setContextMenu(true);
+        setMouseCoordinates({ x: e.clientX, y: e.clientY });
+    }
+
     return (
         <>
             <Container>
-                <MessagesContainer>
+                {contextMenu && (
+                    <ContextMenu
+                        $x={mouseCoordinates.x}
+                        $y={mouseCoordinates.y}
+                    >
+                        <ContextMenuItem>Delete</ContextMenuItem>
+                        <ContextMenuItem>Edit</ContextMenuItem>
+                    </ContextMenu>
+                )}
+
+                <MessagesContainer onClick={() => setContextMenu(false)}>
                     {messages.map((message) => (
                         <MessageDiv
                             key={message.id}
                             $isSender={currentUserId === message.senderId}
+                            onContextMenu={(e) => handleRightClick(e)}
                         >
                             <MessageText>{message.text}</MessageText>
                             <MessageDate>
@@ -65,6 +87,7 @@ const Container = styled.div`
     border: 1px solid #86880b;
     border-radius: 5px;
     width: 400px;
+    position: relative;
 `;
 
 const MessagesContainer = styled.div`
@@ -129,5 +152,28 @@ const SendMessageBtn = styled.button`
 
     &:hover {
         background-color: #686909;
+    }
+`;
+
+const ContextMenu = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    padding: 0.5rem;
+    z-index: 1000;
+    background-color: #252525;
+    border: 1px solid #525252;
+    border-radius: 5px;
+    top: ${(props) => props.$y}px;
+    left: ${(props) => props.$x}px;
+`;
+
+const ContextMenuItem = styled.div`
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: #525252;
     }
 `;
