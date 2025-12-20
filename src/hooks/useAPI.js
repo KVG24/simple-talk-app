@@ -153,12 +153,12 @@ export default function useAPI() {
         }
     };
 
-    const editMessage = async (editedMessageData, messageId) => {
+    const editMessage = async (messageId, editedMessageData) => {
         try {
             const response = await fetch(
                 `${API_URL}/messages/edit/${messageId}`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
