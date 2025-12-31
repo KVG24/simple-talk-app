@@ -36,6 +36,7 @@ export default function ChatWindow({
 
     function handleRightClick(e, id, senderId) {
         if (senderId === currentUserId) {
+            setMode("");
             e.preventDefault();
             setSelectedId(id);
             setContextMenu(true);
