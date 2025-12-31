@@ -46,6 +46,13 @@ export default function ChatWindow({
         }
     }
 
+    function scrollUp() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }
+
     const resetMode = () => {
         setMode("");
         setSelectedId(null);
@@ -77,6 +84,10 @@ export default function ChatWindow({
                         </ContextMenuItem>
                     </ContextMenu>
                 )}
+
+                <ScrollUp onClick={() => scrollUp()}>
+                    ⬆ Conversations ⬆
+                </ScrollUp>
 
                 <MessagesContainer onClick={() => setContextMenu(false)}>
                     {messages.map((message) => (
@@ -123,6 +134,11 @@ const Container = styled.div`
     border-radius: 5px;
     width: 400px;
     position: relative;
+
+    @media (max-width: 500px) {
+        height: 90vh;
+        width: 100%;
+    }
 `;
 
 const MessagesContainer = styled.div`
@@ -193,4 +209,14 @@ const ContextMenuItem = styled.div`
     &:hover {
         background-color: #525252;
     }
+`;
+
+const ScrollUp = styled.div`
+    position: absolute;
+    top: 1rem;
+    right: 30%;
+    font-size: 1rem;
+    padding: 0.3rem 1rem;
+    border-radius: 5px;
+    background-color: #113d13;
 `;

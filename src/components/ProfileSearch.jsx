@@ -19,10 +19,20 @@ export default function ProfileSearch({ openChatWindow }) {
         return () => clearTimeout(delayed);
     }, [query]);
 
+    function handleClickOnResult(id) {
+        openChatWindow(id);
+        setQuery("");
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+        });
+    }
+
     return (
         <Container>
             <SearchInput
                 type="text"
+                name="search"
                 placeholder="Search users..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -33,7 +43,7 @@ export default function ProfileSearch({ openChatWindow }) {
                     results.map((profile) => (
                         <FoundProfile
                             key={profile.id}
-                            onClick={() => openChatWindow(profile.id)}
+                            onClick={() => handleClickOnResult(profile.id)}
                         >
                             {profile.name} (@{profile.username})
                         </FoundProfile>
@@ -53,6 +63,11 @@ const Container = styled.div`
     border-radius: 5px;
     padding: 0.5rem;
     background-color: #3d3d3d;
+
+    @media (max-width: 500px) {
+        top: 0.2rem;
+        left: 0.2rem;
+    }
 `;
 
 const SearchInput = styled.input`

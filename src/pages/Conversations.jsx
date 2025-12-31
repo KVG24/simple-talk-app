@@ -25,6 +25,14 @@ export default function Conversations() {
         setPartnerId(profileId);
     }
 
+    function handleClickOnPartner(id) {
+        openChatWindow(id);
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+        });
+    }
+
     function refreshMessages(profileId) {
         getConversation(profileId).then((data) => setMessages(data));
     }
@@ -39,12 +47,12 @@ export default function Conversations() {
                 Log Out
             </LogOutLink>
             <Container>
-                <Title>Simple_Talk</Title>
+                <Title>Conversations</Title>
                 <ConversationsDiv>
                     <ConversationPartners>
                         {conversationProfiles.map((profile) => (
                             <PartnerDiv
-                                onClick={() => openChatWindow(profile.id)}
+                                onClick={() => handleClickOnPartner(profile.id)}
                                 key={profile.id}
                                 $isActive={partnerId === profile.id}
                             >
@@ -71,6 +79,10 @@ export default function Conversations() {
 const Title = styled.h1`
     text-align: center;
     width: 100%;
+
+    @media (max-width: 500px) {
+        margin-top: 4rem;
+    }
 `;
 
 const LogOutLink = styled.a`
@@ -88,6 +100,10 @@ const Container = styled.div`
     max-width: 1000px;
     margin: 0 auto;
     height: 80vh;
+
+    @media (max-width: 500px) {
+        height: inherit;
+    }
 `;
 
 const ConversationsDiv = styled.div`
@@ -95,6 +111,10 @@ const ConversationsDiv = styled.div`
     gap: 1rem;
     justify-content: center;
     height: 100%;
+
+    @media (max-width: 500px) {
+        flex-direction: column;
+    }
 `;
 
 const ConversationPartners = styled.div`
@@ -107,6 +127,11 @@ const ConversationPartners = styled.div`
     width: 400px;
     overflow-y: auto;
     scrollbar-gutter: stable;
+
+    @media (max-width: 500px) {
+        width: 100%;
+        height: 75vh;
+    }
 `;
 
 const PartnerDiv = styled.div`
